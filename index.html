@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Story Generator Pro</title>
+    <title>AI Story Generator Ultimate</title>
     <style>
         * {
             margin: 0;
@@ -12,64 +12,116 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 40px;
-            padding: 30px 0;
+            margin-bottom: 50px;
+            padding: 40px 0;
+            animation: fadeInDown 0.8s;
         }
 
         .header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            font-weight: 800;
         }
 
         .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 300;
         }
 
         .card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.8s;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 25px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .mode-btn.active {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .mode-btn h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn p {
+            opacity: 0.8;
+            font-size: 0.95em;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         label {
             display: block;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #333;
-            font-size: 0.95em;
+            font-size: 1em;
         }
 
         input[type="text"],
         textarea,
         select {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 1em;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
             font-family: inherit;
         }
 
@@ -78,6 +130,7 @@
         select:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         textarea {
@@ -86,15 +139,15 @@
         }
 
         .btn {
-            padding: 14px 30px;
+            padding: 16px 35px;
             border: none;
-            border-radius: 8px;
-            font-size: 1em;
+            border-radius: 12px;
+            font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         .btn-primary {
@@ -103,9 +156,9 @@
             width: 100%;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
         .btn-primary:disabled {
@@ -117,71 +170,115 @@
         .btn-secondary {
             background: #f0f0f0;
             color: #333;
-            margin-right: 10px;
         }
 
         .btn-secondary:hover {
             background: #e0e0e0;
         }
 
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .preview-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .preview-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .preview-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .preview-item:last-child {
+            border-bottom: none;
+        }
+
+        .preview-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .preview-value {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .streaming-display {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 25px 0;
+            max-height: 600px;
+            overflow-y: auto;
+            font-family: 'Georgia', serif;
+            line-height: 1.9;
+            color: #333;
+            white-space: pre-wrap;
+        }
+
         .progress-container {
-            display: none;
-            margin: 20px 0;
+            margin: 25px 0;
         }
 
         .progress-bar {
             width: 100%;
-            height: 30px;
+            height: 40px;
             background: #f0f0f0;
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
             position: relative;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 100%;
             transition: width 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 600;
-            font-size: 0.9em;
+            font-weight: 700;
+            font-size: 1em;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .status-message {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 15px;
             color: #666;
-            font-weight: 500;
-        }
-
-        .result-container {
-            display: none;
-        }
-
-        .result-box {
-            background: #f9f9f9;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            max-height: 500px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            font-family: 'Georgia', serif;
-            line-height: 1.8;
-            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
         }
 
         .stats {
             display: flex;
             justify-content: space-around;
-            margin: 20px 0;
-            padding: 15px;
-            background: #f0f0f0;
-            border-radius: 8px;
+            margin: 25px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
         }
 
         .stat-item {
@@ -189,174 +286,305 @@
         }
 
         .stat-value {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: #667eea;
+            font-size: 2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .stat-label {
-            font-size: 0.9em;
+            font-size: 0.95em;
             color: #666;
-            margin-top: 5px;
+            margin-top: 8px;
+            font-weight: 600;
         }
 
         .action-buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
         }
 
-        .error-message {
+        .action-buttons button {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            animation: slideIn 0.3s;
+        }
+
+        .alert-error {
             background: #fee;
             color: #c00;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #c00;
-            display: none;
+            border-left: 5px solid #c00;
         }
 
-        .success-message {
+        .alert-success {
             background: #efe;
             color: #060;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #060;
-            display: none;
+            border-left: 5px solid #060;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+        .alert-info {
+            background: #e7f3ff;
+            color: #0066cc;
+            border-left: 5px solid #0066cc;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 4px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2em;
+                font-size: 2.5em;
             }
             
             .card {
-                padding: 20px;
+                padding: 25px;
+            }
+
+            .mode-selector {
+                flex-direction: column;
             }
 
             .action-buttons {
                 flex-direction: column;
             }
 
-            .btn-secondary {
-                margin-right: 0;
-                margin-bottom: 10px;
+            .action-buttons button {
+                min-width: 100%;
             }
         }
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: help;
-            color: #667eea;
-            margin-left: 5px;
+        .niche-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+        .niche-option {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            background: white;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .niche-option:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .niche-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎬 AI Story Generator Pro</h1>
-            <p>Create professional stories powered by AI</p>
+            <h1>✨ AI Story Generator Ultimate</h1>
+            <p>Create professional stories with AI - Instant or Custom mode</p>
         </div>
 
         <div class="card">
-            <h2 style="margin-bottom: 20px; color: #333;">Story Configuration</h2>
-            
-            <div class="error-message" id="errorMessage"></div>
-            <div class="success-message" id="successMessage"></div>
-
-            <form id="storyForm">
-                <div class="grid">
-                    <div class="form-group">
-                        <label for="title">Story Title *</label>
-                        <input type="text" id="title" required placeholder="Enter your story title">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="niche">Niche *</label>
-                        <select id="niche" required>
-                            <option value="">Select a niche</option>
-                            <option value="Romance">Romance</option>
-                            <option value="Horror">Horror</option>
-                            <option value="Mystery">Mystery</option>
-                            <option value="Fantasy">Fantasy</option>
-                            <option value="Sci-Fi">Sci-Fi</option>
-                            <option value="Thriller">Thriller</option>
-                            <option value="Drama">Drama</option>
-                            <option value="Comedy">Comedy</option>
-                        </select>
-                    </div>
+            <div class="mode-selector">
+                <div class="mode-btn active" onclick="switchMode('quick')">
+                    <h3>⚡ Quick Mode</h3>
+                    <p>Just enter a title - AI does the rest!</p>
                 </div>
+                <div class="mode-btn" onclick="switchMode('custom')">
+                    <h3>🎨 Custom Mode</h3>
+                    <p>Full control over every detail</p>
+                </div>
+            </div>
 
-                <div class="grid">
-                    <div class="form-group">
-                        <label for="tone">Tone *</label>
-                        <select id="tone" required>
-                            <option value="">Select a tone</option>
-                            <option value="Dark">Dark</option>
-                            <option value="Light-hearted">Light-hearted</option>
-                            <option value="Serious">Serious</option>
-                            <option value="Humorous">Humorous</option>
-                            <option value="Suspenseful">Suspenseful</option>
-                            <option value="Romantic">Romantic</option>
-                        </select>
-                    </div>
+            <div id="alertContainer"></div>
 
-                    <div class="form-group">
-                        <label for="targetLength">Target Length</label>
-                        <select id="targetLength">
-                            <option value="10000">Short (10,000 chars)</option>
-                            <option value="30000">Medium (30,000 chars)</option>
-                            <option value="60000" selected>Long (60,000 chars)</option>
-                            <option value="70000">Very Long (70,000 chars)</option>
-                            <option value="100000">Epic (100,000 chars)</option>
-                        </select>
-                    </div>
+            <!-- QUICK MODE -->
+            <div id="quickMode" class="form-section active">
+                <h2 style="margin-bottom: 25px; color: #333;">Quick Story Generation</h2>
+                
+                <div class="form-group">
+                    <label for="quickTitle">Story Title *</label>
+                    <input type="text" id="quickTitle" placeholder="Enter your story title (e.g., 'The Last Dragon')" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="plot">Plot Summary *</label>
-                    <textarea id="plot" required placeholder="Describe your story plot in detail..."></textarea>
+                    <label for="quickLength">Story Length</label>
+                    <select id="quickLength">
+                        <option value="10000">Short (10K chars - 2 mins)</option>
+                        <option value="30000">Medium (30K chars - 4 mins)</option>
+                        <option value="60000" selected>Long (60K chars - 8 mins)</option>
+                        <option value="100000">Epic (100K chars - 12 mins)</option>
+                    </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="styleExample">Style Example * (minimum 500 characters)</label>
-                    <textarea id="styleExample" required placeholder="Paste a writing sample that matches the style you want..." style="min-height: 150px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="extraInstructions">Extra Instructions (optional)</label>
-                    <textarea id="extraInstructions" placeholder="Any additional instructions or requirements..."></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary" id="generateBtn">
-                    Generate Story
+                <button class="btn btn-primary" onclick="autoGenerateDetails()">
+                    🤖 Auto-Generate Story Plan
                 </button>
-            </form>
 
-            <div class="progress-container" id="progressContainer">
+                <div id="previewSection" class="hidden">
+                    <div class="preview-card">
+                        <h3>📋 Generated Story Plan</h3>
+                        <div class="preview-item">
+                            <div class="preview-label">Niche:</div>
+                            <div class="preview-value" id="previewNiche"></div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="preview-label">Tone:</div>
+                            <div class="preview-value" id="previewTone"></div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="preview-label">Plot:</div>
+                            <div class="preview-value" id="previewPlot"></div>
+                        </div>
+                        <div class="preview-item">
+                            <div class="preview-label">Style Example:</div>
+                            <div class="preview-value" id="previewStyle"></div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="approveAndGenerate()">
+                            ✅ Approve & Generate Story
+                        </button>
+                        <button class="btn btn-secondary" onclick="autoGenerateDetails()">
+                            🔄 Regenerate Plan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOM MODE -->
+            <div id="customMode" class="form-section">
+                <h2 style="margin-bottom: 25px; color: #333;">Custom Story Configuration</h2>
+                
+                <div class="form-group">
+                    <label for="customTitle">Story Title *</label>
+                    <input type="text" id="customTitle" placeholder="Enter your story title" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Niche *</label>
+                    <div class="niche-grid" id="nicheGrid"></div>
+                </div>
+
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="customTone">Tone *</label>
+                        <select id="customTone" required>
+                            <option value="">Select tone...</option>
+                            <option value="Dark and gritty">Dark and gritty</option>
+                            <option value="Epic and heroic">Epic and heroic</option>
+                            <option value="Light and humorous">Light and humorous</option>
+                            <option value="Mysterious and suspenseful">Mysterious and suspenseful</option>
+                            <option value="Romantic and emotional">Romantic and emotional</option>
+                            <option value="Action-packed and intense">Action-packed and intense</option>
+                            <option value="Philosophical and thoughtful">Philosophical and thoughtful</option>
+                            <option value="Horrifying and tense">Horrifying and tense</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="customLength">Target Length</label>
+                        <select id="customLength">
+                            <option value="10000">Short (10K)</option>
+                            <option value="30000">Medium (30K)</option>
+                            <option value="60000" selected>Long (60K)</option>
+                            <option value="100000">Epic (100K)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="customPlot">Plot Summary *</label>
+                    <textarea id="customPlot" placeholder="Describe your story plot in detail..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="customStyle">Style Example * (min 500 chars)</label>
+                    <textarea id="customStyle" placeholder="Paste writing sample matching your desired style..." style="min-height: 150px;" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="customExtra">Extra Instructions (optional)</label>
+                    <textarea id="customExtra" placeholder="Any additional requirements..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateCustomStory()">
+                    🚀 Generate Story
+                </button>
+            </div>
+
+            <div id="progressContainer" class="progress-container hidden">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill">0%</div>
                 </div>
@@ -364,8 +592,8 @@
             </div>
         </div>
 
-        <div class="card result-container" id="resultContainer">
-            <h2 style="margin-bottom: 20px; color: #333;">Generated Story</h2>
+        <div id="resultContainer" class="card hidden">
+            <h2 style="margin-bottom: 25px; color: #333;">✨ Generated Story</h2>
             
             <div class="stats">
                 <div class="stat-item">
@@ -377,111 +605,218 @@
                     <div class="stat-label">Words</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value" id="chunkCount">0</div>
-                    <div class="stat-label">Parts</div>
+                    <div class="stat-value" id="timeCount">0</div>
+                    <div class="stat-label">Generation Time</div>
                 </div>
             </div>
 
-            <div class="result-box" id="resultBox"></div>
+            <div class="streaming-display" id="storyDisplay"></div>
 
             <div class="action-buttons">
-                <button class="btn btn-secondary" onclick="copyToClipboard()">📋 Copy to Clipboard</button>
-                <button class="btn btn-secondary" onclick="downloadStory()">💾 Download as TXT</button>
-                <button class="btn btn-primary" onclick="resetForm()">🔄 Generate New Story</button>
+                <button class="btn btn-secondary" onclick="copyToClipboard()">📋 Copy</button>
+                <button class="btn btn-secondary" onclick="downloadStory()">💾 Download</button>
+                <button class="btn btn-primary" onclick="resetAll()">🔄 New Story</button>
             </div>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://story-generator-backend-bier.onrender.com';
+        
+        let currentMode = 'quick';
+        let generatedDetails = null;
         let generatedStory = '';
+        let selectedNiche = '';
+        let startTime = 0;
 
-        document.getElementById('storyForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await generateStory();
-        });
+        // 50+ Niches
+        const niches = [
+            'Fantasy', 'Sci-Fi', 'Romance', 'Horror', 'Mystery', 'Thriller', 'Adventure',
+            'Drama', 'Comedy', 'Historical Fiction', 'Urban Fantasy', 'Cyberpunk',
+            'Dystopian', 'Superhero', 'Western', 'Post-Apocalyptic', 'Paranormal',
+            'Crime', 'War', 'Slice of Life', 'Steampunk', 'Space Opera', 'Military',
+            'Noir', 'Gothic', 'Supernatural', 'Time Travel', 'Alternate History',
+            'Magical Realism', 'Young Adult', 'Epic Fantasy', 'Dark Fantasy',
+            'High Fantasy', 'Sword and Sorcery', 'Zombie', 'Vampire', 'Werewolf',
+            'Alien', 'Psychological', 'Action', 'Espionage', 'Heist', 'Sports',
+            'Political', 'Legal', 'Medical', 'Detective', 'Cozy Mystery', 'Hard Boiled',
+            'Revenge', 'Survival', 'Coming of Age'
+        ];
 
-        async function generateStory() {
-            const title = document.getElementById('title').value;
-            const niche = document.getElementById('niche').value;
-            const tone = document.getElementById('tone').value;
-            const plot = document.getElementById('plot').value;
-            const styleExample = document.getElementById('styleExample').value;
-            const extraInstructions = document.getElementById('extraInstructions').value;
-            const targetLength = document.getElementById('targetLength').value;
+        // Initialize niche grid
+        function initNicheGrid() {
+            const grid = document.getElementById('nicheGrid');
+            niches.forEach(niche => {
+                const div = document.createElement('div');
+                div.className = 'niche-option';
+                div.textContent = niche;
+                div.onclick = () => selectNiche(niche, div);
+                grid.appendChild(div);
+            });
+        }
 
-            // Validation
-            if (styleExample.length < 500) {
-                showError('Style example must be at least 500 characters long');
+        function selectNiche(niche, element) {
+            document.querySelectorAll('.niche-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedNiche = niche;
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
+            
+            if (mode === 'quick') {
+                document.querySelectorAll('.mode-btn')[0].classList.add('active');
+                document.getElementById('quickMode').classList.add('active');
+            } else {
+                document.querySelectorAll('.mode-btn')[1].classList.add('active');
+                document.getElementById('customMode').classList.add('active');
+            }
+            
+            hideAlert();
+        }
+
+        async function autoGenerateDetails() {
+            const title = document.getElementById('quickTitle').value.trim();
+            
+            if (!title) {
+                showAlert('Please enter a story title', 'error');
                 return;
             }
 
-            // Hide previous results
-            document.getElementById('resultContainer').style.display = 'none';
-            document.getElementById('errorMessage').style.display = 'none';
+            showAlert('🤖 AI is analyzing your title and creating a story plan...', 'info');
             
-            // Show progress
-            document.getElementById('progressContainer').style.display = 'block';
-            document.getElementById('generateBtn').disabled = true;
-            document.getElementById('generateBtn').innerHTML = '<span class="loading-spinner"></span> Generating...';
-
             try {
-                updateProgress(10, 'Connecting to AI...');
-
-                const response = await fetch(`${API_URL}/api/generate`, {
+                const response = await fetch(`${API_URL}/api/auto-generate-details`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        title,
-                        niche,
-                        tone,
-                        plot,
-                        styleExample,
-                        extraInstructions,
-                        targetLength: parseInt(targetLength)
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title })
                 });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Generation failed');
-                }
-
-                updateProgress(50, 'AI is writing your story...');
 
                 const data = await response.json();
 
-                updateProgress(100, 'Complete!');
-
-                if (data.success) {
-                    generatedStory = data.script;
-                    displayResult(data);
-                    showSuccess('Story generated successfully!');
-                } else {
-                    throw new Error(data.error || 'Generation failed');
+                if (!data.success) {
+                    throw new Error(data.error || 'Auto-generation failed');
                 }
 
+                generatedDetails = data.details;
+                
+                // Display preview
+                document.getElementById('previewNiche').textContent = generatedDetails.niche;
+                document.getElementById('previewTone').textContent = generatedDetails.tone;
+                document.getElementById('previewPlot').textContent = generatedDetails.plot;
+                document.getElementById('previewStyle').textContent = generatedDetails.styleExample;
+                
+                document.getElementById('previewSection').classList.remove('hidden');
+                showAlert('✅ Story plan generated! Review and approve to continue.', 'success');
+
             } catch (error) {
-                console.error('Error:', error);
-                showError(error.message || 'Failed to generate story. Please try again.');
-            } finally {
-                document.getElementById('progressContainer').style.display = 'none';
-                document.getElementById('generateBtn').disabled = false;
-                document.getElementById('generateBtn').innerHTML = 'Generate Story';
+                showAlert('❌ ' + error.message, 'error');
             }
         }
 
-        function displayResult(data) {
-            document.getElementById('resultBox').textContent = data.script;
-            document.getElementById('charCount').textContent = data.stats.totalChars.toLocaleString();
-            document.getElementById('wordCount').textContent = data.stats.totalWords.toLocaleString();
-            document.getElementById('chunkCount').textContent = data.stats.chunks;
-            document.getElementById('resultContainer').style.display = 'block';
+        async function approveAndGenerate() {
+            if (!generatedDetails) return;
+
+            const title = document.getElementById('quickTitle').value;
+            const targetLength = parseInt(document.getElementById('quickLength').value);
+
+            await generateWithStreaming(
+                title,
+                generatedDetails.niche,
+                generatedDetails.tone,
+                generatedDetails.plot,
+                generatedDetails.styleExample,
+                '',
+                targetLength
+            );
+        }
+
+        async function generateCustomStory() {
+            const title = document.getElementById('customTitle').value.trim();
+            const tone = document.getElementById('customTone').value;
+            const plot = document.getElementById('customPlot').value.trim();
+            const style = document.getElementById('customStyle').value.trim();
+            const extra = document.getElementById('customExtra').value.trim();
+            const targetLength = parseInt(document.getElementById('customLength').value);
+
+            if (!title || !selectedNiche || !tone || !plot || !style) {
+                showAlert('❌ Please fill all required fields', 'error');
+                return;
+            }
+
+            if (style.length < 500) {
+                showAlert('❌ Style example must be at least 500 characters', 'error');
+                return;
+            }
+
+            await generateWithStreaming(title, selectedNiche, tone, plot, style, extra, targetLength);
+        }
+
+        async function generateWithStreaming(title, niche, tone, plot, styleExample, extraInstructions, targetLength) {
+            hideAlert();
+            document.getElementById('progressContainer').classList.remove('hidden');
+            document.getElementById('resultContainer').classList.add('hidden');
             
-            // Scroll to results
-            document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
+            const storyDisplay = document.getElementById('storyDisplay');
+            storyDisplay.textContent = '';
+            generatedStory = '';
+            startTime = Date.now();
+
+            try {
+                const response = await fetch(`${API_URL}/api/generate-stream`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title, niche, tone, plot, styleExample, extraInstructions, targetLength
+                    })
+                });
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const data = JSON.parse(line.slice(6));
+
+                            if (data.type === 'init') {
+                                updateProgress(0, `Generating ${data.totalChunks} parts...`);
+                            } else if (data.type === 'progress') {
+                                updateProgress(data.progress, `Generating part ${data.chunk}/${data.total}...`);
+                            } else if (data.type === 'chunk') {
+                                generatedStory += data.text + '\n\n';
+                                storyDisplay.textContent = generatedStory;
+                                document.getElementById('resultContainer').classList.remove('hidden');
+                                storyDisplay.scrollTop = storyDisplay.scrollHeight;
+                            } else if (data.type === 'complete') {
+                                const elapsed = Math.round((Date.now() - startTime) / 1000);
+                                document.getElementById('charCount').textContent = data.totalChars.toLocaleString();
+                                document.getElementById('wordCount').textContent = data.totalWords.toLocaleString();
+                                document.getElementById('timeCount').textContent = elapsed + 's';
+                                updateProgress(100, '✅ Complete!');
+                                setTimeout(() => {
+                                    document.getElementById('progressContainer').classList.add('hidden');
+                                }, 2000);
+                                showAlert('✅ Story generated successfully!', 'success');
+                            } else if (data.type === 'error') {
+                                throw new Error(data.error);
+                            }
+                        }
+                    }
+                }
+
+            } catch (error) {
+                showAlert('❌ ' + error.message, 'error');
+                document.getElementById('progressContainer').classList.add('hidden');
+            }
         }
 
         function updateProgress(percent, message) {
@@ -490,51 +825,50 @@
             document.getElementById('statusMessage').textContent = message;
         }
 
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = '❌ ' + message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
         }
 
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = '✅ ' + message;
-            successDiv.style.display = 'block';
-            setTimeout(() => {
-                successDiv.style.display = 'none';
-            }, 3000);
+        function hideAlert() {
+            document.getElementById('alertContainer').innerHTML = '';
         }
 
         function copyToClipboard() {
             navigator.clipboard.writeText(generatedStory).then(() => {
-                showSuccess('Story copied to clipboard!');
-            }).catch(() => {
-                showError('Failed to copy to clipboard');
+                showAlert('✅ Story copied to clipboard!', 'success');
             });
         }
 
         function downloadStory() {
-            const title = document.getElementById('title').value || 'story';
+            const title = document.getElementById(currentMode === 'quick' ? 'quickTitle' : 'customTitle').value || 'story';
             const blob = new Blob([generatedStory], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
-            document.body.appendChild(a);
             a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-            showSuccess('Story downloaded!');
+            URL.revokeObjectURL(url);
+            showAlert('✅ Story downloaded!', 'success');
         }
 
-        function resetForm() {
-            document.getElementById('storyForm').reset();
-            document.getElementById('resultContainer').style.display = 'none';
+        function resetAll() {
+            document.getElementById('quickTitle').value = '';
+            document.getElementById('customTitle').value = '';
+            document.getElementById('customPlot').value = '';
+            document.getElementById('customStyle').value = '';
+            document.getElementById('customExtra').value = '';
+            document.getElementById('previewSection').classList.add('hidden');
+            document.getElementById('resultContainer').classList.add('hidden');
+            generatedDetails = null;
+            generatedStory = '';
+            selectedNiche = '';
+            document.querySelectorAll('.niche-option').forEach(el => el.classList.remove('selected'));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // Initialize
+        initNicheGrid();
     </script>
 </body>
 </html>
